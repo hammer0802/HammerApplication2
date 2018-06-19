@@ -28,7 +28,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private val preference: SharedPreferences by lazy { getSharedPreferences("kazu", Context.MODE_PRIVATE) }
     //private var posi: Int = 0
     val gson = Gson()
-    val list: MutableList<Item> by lazy { gson.fromJson<MutableList<Item>>(preference!!.getString("list", ""), object : TypeToken<MutableList<Item>>() {}.type) }
+    //val list: MutableList<Item> by lazy { gson.fromJson<MutableList<Item>>(preference!!.getString("list", ""), object : TypeToken<MutableList<Item>>() {}.type) }
+    val list: MutableList<Item> by lazy { gson?.fromJson<MutableList<Item>>(preference!!.getString("list", ""), object : TypeToken<MutableList<Item>>() {}.type) ?: mutableListOf<Item>()}
     val intent1= this.intent
     val position= intent1.getIntExtra("position",0)
 
@@ -98,8 +99,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         })
         //value.setText(data!!.getInt(posi.toString()+"kazu", 0).toString())
         //name.setText(data!!.getString(posi.toString()+"namae", ""))
-        value.setText(list[position].number, 0))
-        name.setText(preference!!.getString(list[position].name, ""))
+        value.setText(list[position].number)
+        name.setText(list[position].name)
     }
 
     override fun onBackPressed() {

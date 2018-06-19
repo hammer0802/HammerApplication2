@@ -13,14 +13,14 @@ import kotlinx.android.synthetic.main.activity_list.*
 class ListActivity : AppCompatActivity() {
     private val preference: SharedPreferences by lazy { getSharedPreferences("kazu", Context.MODE_PRIVATE) }
     val gson = Gson()
-    val list: MutableList<Item> by lazy { gson.fromJson<MutableList<Item>>(preference!!.getString("list", ""), object : TypeToken<MutableList<Item>>() {}.type) }
+    val list: MutableList<Item> by lazy { gson?.fromJson<MutableList<Item>>(preference!!.getString("list", ""), object : TypeToken<MutableList<Item>>() {}.type) ?: mutableListOf<Item>()}
     override fun onCreate(savedInstanceState: Bundle?) {
         val listsize: SharedPreferences = this.getSharedPreferences("listsize", Context.MODE_PRIVATE)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_list)
         create_button.setOnClickListener(android.view.View.OnClickListener {
             val intent1= Intent(this, MainActivity::class.java)
-            val l= list.size
+            val l= list?.size ?: 0
             intent1.putExtra("position",l)
             list += Item()
 

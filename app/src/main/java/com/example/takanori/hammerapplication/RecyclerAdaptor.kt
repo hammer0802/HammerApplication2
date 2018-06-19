@@ -21,7 +21,8 @@ import com.google.gson.Gson
 class MyRecyclerAdaptor(val activity:ListActivity):RecyclerView.Adapter<MyRecyclerViewHolder>() {
     private val preference: SharedPreferences by lazy { activity.getSharedPreferences("kazu", Context.MODE_PRIVATE) }
         val gson = Gson()
-    val list: MutableList<Item> by lazy { gson.fromJson<MutableList<Item>>(preference!!.getString("list", ""), object : TypeToken<MutableList<Item>>() {}.type) }        //Jsonの設定
+    //val list: MutableList<Item> by lazy { gson?.fromJson<MutableList<Item>>(preference!!.getString("list", "") , object : TypeToken<MutableList<Item>>() {}.type)  }   //Jsonの設定
+    val list: MutableList<Item> by lazy { gson?.fromJson<MutableList<Item>>(preference!!.getString("list", ""), object : TypeToken<MutableList<Item>>() {}.type) ?: mutableListOf<Item>()}
 
 
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): MyRecyclerViewHolder {
@@ -31,12 +32,12 @@ class MyRecyclerAdaptor(val activity:ListActivity):RecyclerView.Adapter<MyRecycl
     }
 
     override fun getItemCount(): Int {
-        return list.size
+        return list?.size ?: 0
 }
 
     override fun onBindViewHolder(holder: MyRecyclerViewHolder?, position: Int) {
-        holder!!.v.findViewById<TextView>(R.id.item_name).text=list[position].name
-        holder!!.v.findViewById<TextView>(R.id.item_number).text=list[position].number.toString()
+        holder!!.v.findViewById<TextView>(R.id.item_name).text=list!![position].name
+        holder!!.v.findViewById<TextView>(R.id.item_number).text=list!![position].number.toString()
         //sharedpriferenceで保存されているpositionごとのcounter数値を、リストの右端に表示させる
         holder.v.setOnClickListener{v ->
             val intent1= Intent(activity,MainActivity::class.java)
