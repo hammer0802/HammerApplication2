@@ -5,6 +5,7 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.os.PersistableBundle
 import android.support.v7.widget.LinearLayoutManager
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -15,7 +16,6 @@ class ListActivity : AppCompatActivity() {
     val gson = Gson()
     val list: MutableList<Item> by lazy { gson?.fromJson<MutableList<Item>>(preference!!.getString("list", ""), object : TypeToken<MutableList<Item>>() {}.type) ?: mutableListOf<Item>()}
     override fun onCreate(savedInstanceState: Bundle?) {
-        val listsize: SharedPreferences = this.getSharedPreferences("listsize", Context.MODE_PRIVATE)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_list)
         create_button.setOnClickListener(android.view.View.OnClickListener {
@@ -30,14 +30,30 @@ class ListActivity : AppCompatActivity() {
             this.startActivity(intent1)
         })
 
-        recycler_view.layoutManager = LinearLayoutManager(this)
-        recycler_view.adapter = MyRecyclerAdaptor(this)
+    }
+
+    override fun onStart() {
+        super.onStart()
+    }
+
+    override fun onPostCreate(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {
+        super.onPostCreate(savedInstanceState, persistentState)
     }
 
     override fun onResume() {
         super.onResume()
+        var recyclerAdaptor = MyRecyclerAdaptor(this)
+        recycler_view.layoutManager = LinearLayoutManager(this)
+        recycler_view.adapter = recyclerAdaptor
+        recyclerAdaptor.reload()
         recycler_view.adapter.notifyDataSetChanged()
     }
 
+    override fun onPostResume() {
+        super.onPostResume()
+    }
 
+    override fun onRestart() {
+        super.onRestart()
+    }
 }

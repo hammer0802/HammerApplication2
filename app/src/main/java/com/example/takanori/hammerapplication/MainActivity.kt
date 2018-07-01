@@ -29,9 +29,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     //private var posi: Int = 0
     val gson = Gson()
     //val list: MutableList<Item> by lazy { gson.fromJson<MutableList<Item>>(preference!!.getString("list", ""), object : TypeToken<MutableList<Item>>() {}.type) }
-    val list: MutableList<Item> by lazy { gson?.fromJson<MutableList<Item>>(preference!!.getString("list", ""), object : TypeToken<MutableList<Item>>() {}.type) ?: mutableListOf<Item>()}
-    val intent1= this.intent
-    val position= intent1.getIntExtra("position",0)
+    val list: MutableList<Item> by lazy { gson.fromJson<MutableList<Item>>(preference.getString("list", ""), object : TypeToken<MutableList<Item>>() {}.type) ?: mutableListOf<Item>()}
+    val intent1: Intent by lazy {this.intent}
+    val position: Int by lazy { intent1.getIntExtra("position",0) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,7 +42,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                     .setAction("Action", null).show()
         }
-
+        val intent1= this.intent
+        val position= intent1?.getIntExtra("position",0) ?: 0
         val toggle = ActionBarDrawerToggle(
                 this, drawer_layout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
         drawer_layout.addDrawerListener(toggle)
@@ -99,7 +100,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         })
         //value.setText(data!!.getInt(posi.toString()+"kazu", 0).toString())
         //name.setText(data!!.getString(posi.toString()+"namae", ""))
-        value.setText(list[position].number)
+        value.setText(list[position].number.toString())
         name.setText(list[position].name)
     }
 
@@ -108,11 +109,15 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             drawer_layout.closeDrawer(GravityCompat.START)
         } else {
             super.onBackPressed()
-            val e = this.preference!!.edit()
+            val e = this.preference.edit()
             //e.putInt(posi.toString()+"kosuu", this.value.text.toString().toInt())
             //e.putString(posi.toString()+"namae", this.name.text.toString())
+            value.text
+            name.text
+            list[position].name = name.text.toString()
+            list[position].number = value.text.toString().toInt()
             e.putString("list", gson.toJson(list))
-            e.commit()
+            e.apply()
         }
     }
 
